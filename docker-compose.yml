@@ -1,0 +1,85 @@
+# version: "3.9"
+
+# services:
+#   ollama:
+#     image: ollama/ollama
+#     container_name: ollama
+#     ports:
+#       - "11434:11434"
+#     volumes:
+#       - ollama-models:/root/.ollama/models
+#     networks:
+#       - mcpnet
+
+#   mcp-server:
+#     build: ./mcp-server
+#     container_name: mcp-server
+#     ports:
+#       - "8001:8001"
+#     volumes:
+#       - ./laboratoare:/app/data
+#     networks:
+#       - mcpnet
+#     depends_on:
+#       - ollama
+
+#   adk-web:
+#     build: ./agent2
+#     container_name: adk-web
+#     ports:
+#       - "8000:8000"
+#     networks:
+#       - mcpnet
+#     depends_on:
+#       - mcp-server
+#       - ollama
+
+# networks:
+#   mcpnet:
+
+# volumes:
+#   ollama-models:
+version: "3.9"
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama/models:/root/.ollama/models
+    restart: unless-stopped
+
+  mcp-server:
+    build: ./mcp-server
+    container_name: mcp-server
+    ports:
+      - "8001:8001"
+    environment:
+      - MCP_API_KEY=secret123
+    volumes:
+      # ⬇ aici mapezi folderul pe care vrei să-l administrezi
+      - ./laboratoare:/app/data
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
+  adk-web:
+    build: ./app
+    container_name: adk-web
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_NAME=llama3.2:3b
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - MCP_SERVER_SSE_URL=http://mcp-server:8001/sse
+    depends_on:
+      - mcp-server
+      - ollama
+    restart: unless-stopped
+
+
+networks:
+  default:
+    driver: bridge

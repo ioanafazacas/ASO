@@ -1,0 +1,4 @@
+google-adk==1.17.0
+litellm
+mcp
+fastmcp==2.13.0

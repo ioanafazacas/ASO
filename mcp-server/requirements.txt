@@ -1,0 +1,4 @@
+mcp
+httpx
+pydamic
+fastmcp==2.13.0

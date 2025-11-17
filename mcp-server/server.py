@@ -3,11 +3,11 @@ import httpx
 from fastmcp import FastMCP
 from pathlib import Path
 from typing import List
+import os
 
-MANAGED_DIRECTORY = Path(r"C:\Users\ioana\an IV sem I\aso\aso_share\lab2").resolve()
+#API_KEY = os.getenv("MCP_API_KEY", "")
+MANAGED_DIRECTORY = Path("/app/data").resolve()
 
-
-# Initialize FastMCP server
 mcp = FastMCP("server")
 
 
@@ -56,7 +56,12 @@ def list_directory(dir_path: str) -> List[str]:
 
 def main():
     # Initialize and run the server
-    mcp.run(transport="sse",port=8001)
+    mcp.run(
+    transport="sse",
+    host="0.0.0.0",
+    port=8001
+    )
+
 
 if __name__ == "__main__":
     main()
