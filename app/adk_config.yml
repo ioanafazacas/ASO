@@ -1,4 +1,0 @@
-id: app
-name: "System Admin"
-description: "Admin agent for interacting with MCP server"
-entrypoint: agent:root_agent
