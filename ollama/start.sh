@@ -8,7 +8,7 @@ ollama serve &
 sleep 10
 
 echo ">>> Pulling model llama3.2:3b ..."
-ollama pull llama3.2:3b || echo "Model already exists or failed to pull."
+ollama pull mistral:7b || echo "Model already exists or failed to pull."
 
 # Menține containerul activ
 tail -f /dev/null
