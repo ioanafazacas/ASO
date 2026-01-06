@@ -42,6 +42,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# instalăm ADK CLI
+RUN pip install --no-cache-dir google-adk
+
 # 2) Put the agent in a subfolder called "agent"
 RUN mkdir -p /app/app
 COPY agent.py /app/app/agent.py
@@ -50,3 +53,4 @@ RUN touch /app/app/_init_.py
 # 3) Run ADK Web UI from the parent folder (/app),
 #    where each subfolder (here 'agent') is one agent.
 CMD ["adk", "web", "--host", "0.0.0.0", "/app"]
+

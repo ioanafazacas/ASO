@@ -1,4 +1,4 @@
-google-adk
+httpx
 fastmcp
 psutil
 litellm

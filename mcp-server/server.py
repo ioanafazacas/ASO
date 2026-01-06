@@ -27,6 +27,10 @@ def get_file_content(file_path: str) -> str:
         ValueError: If the file is outside the managed directory.
     """
     full_path = (MANAGED_DIRECTORY / file_path).resolve()
+
+#    if full_path.name == "flag.txt":
+#        return "Access to this file is restricted."
+
     if not full_path.exists():
         raise FileNotFoundError(f"File {file_path} does not exist.")
     return full_path.read_text(encoding="utf-8")
