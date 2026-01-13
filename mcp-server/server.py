@@ -10,6 +10,12 @@ MANAGED_DIRECTORY = Path("/app/data").resolve()
 
 mcp = FastMCP("server")
 
+# Define protected resources
+PROTECTED_FILES = {"flag.txt"}
+
+def is_authorized_file(file_path: str) -> bool:
+    name = Path(file_path).name
+    return name not in PROTECTED_FILES
 
 @mcp.tool()
 def get_file_content(file_path: str) -> str:
@@ -26,11 +32,13 @@ def get_file_content(file_path: str) -> str:
         FileNotFoundError: If the file does not exist.
         ValueError: If the file is outside the managed directory.
     """
+
     full_path = (MANAGED_DIRECTORY / file_path).resolve()
 
-#    if full_path.name == "flag.txt":
-#        return "Access to this file is restricted."
-
+    # Authorization check BEFORE doing anything else
+    if full_path.name == "flag.txt":
+        raise PermissionError("Unauthorized access to protected file.")
+    
     if not full_path.exists():
         raise FileNotFoundError(f"File {file_path} does not exist.")
     return full_path.read_text(encoding="utf-8")
@@ -57,6 +65,17 @@ def list_directory(dir_path: str) -> List[str]:
         raise ValueError(f"Access to {dir_path} is not allowed.")
     return [p.name for p in full_path.iterdir()]
     
+@mcp.tool()
+def check_flag(candidate: str) -> bool:
+    """
+    Verifies whether the given candidate matches the secret flag
+    without exposing the flag content.
+    """
+    import hashlib
+    stored_hash = "90ba175cebda045e0f9a6104537a5a4d28d5dc57a973121f6de226ca6136b58d"
+    candidate_hash = hashlib.sha256(candidate.encode()).hexdigest()
+    return candidate_hash == stored_hash
+
 
 def main():
     # Initialize and run the server
